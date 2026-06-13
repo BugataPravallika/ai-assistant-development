@@ -2,9 +2,11 @@ services:
   - type: web
     name: ai-assistant-development
     env: python
-    pythonVersion: 3.12
-    buildCommand: pip install -r requirements.txt
+    pythonVersion: 3.12.0
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
     startCommand: gunicorn app:app
     envVars:
       - key: GEMINI_API_KEY
-        sync: false # User must specify their own key in Render dashboard
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.12.0"
