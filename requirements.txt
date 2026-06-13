@@ -3,3 +3,4 @@ google-generativeai==0.8.6
 gunicorn==22.0.0
 python-dotenv==1.0.1
 protobuf>=3.20.0,<4.0
+setuptools>=70.0.0
