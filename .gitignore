@@ -1,0 +1,21 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Feedback / stats output (so user can deploy clean structure)
+# feedback.txt is excluded here or tracked? Usually, we don't want local test feedback in git.
+feedback.txt
+
+# Operating System Files
+.DS_Store
+Thumbs.db
