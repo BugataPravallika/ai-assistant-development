@@ -8,7 +8,9 @@ An interactive, production-ready, SaaS-style AI assistant application showcasing
 ---
 
 ## 🚀 Live Demo & Deployment
+- **Live Application:** [AI Assistant Development](https://ai-assistant-development-zqek.onrender.com)
 - **Deployment Platform:** [Render](https://render.com)
+- **GitHub Repository:** [BugataPravallika/ai-assistant-development](https://github.com/BugataPravallika/ai-assistant-development)
 - **AI Backend:** Google Gemini API (`gemini-1.5-flash`)
 - **Version Control:** GitHub
 
