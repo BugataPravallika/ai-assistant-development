@@ -119,11 +119,15 @@ The project includes standard files (`Procfile`, `render.yaml`, `requirements.tx
 ---
 
 ## 📸 Screenshots
-*(Please add screenshots of your application here once running)*
-1.  **Landing / Hero Section:** Visual representation of SaaS styling.
-2.  **Interactive Assistant:** Split screen displaying options and prompt card selections.
-3.  **Active Output:** Generated response, copy actions, and feedback module.
-4.  **Dashboard:** Statistics cards displaying queries and feedback counts.
+
+### Landing Page
+![Hero Section](screenshots/hero-section.png)
+
+### Assistant Interface
+![Assistant](screenshots/assistant-interface.png)
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
 
 ---
 
