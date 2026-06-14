@@ -10,6 +10,7 @@ import google.generativeai as genai
 load_dotenv()
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 6 * 1024 * 1024  # 6MB upload limit
 
 # Configure Google Gemini API
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -109,14 +110,18 @@ MODEL_FALLBACKS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
 
 def parse_generate_request():
     """Parse JSON or multipart generate requests."""
-    uploaded_file = None
+    uploaded_file = request.files.get("file")
+    is_multipart = bool(
+        uploaded_file
+        or request.form
+        or (request.content_type and "multipart/form-data" in request.content_type)
+    )
 
-    if request.content_type and "multipart/form-data" in request.content_type:
+    if is_multipart:
         func_type = request.form.get("function")
         template_idx = request.form.get("template_index")
         personality = request.form.get("personality", "friendly")
         user_input = (request.form.get("user_input") or "").strip()
-        uploaded_file = request.files.get("file")
     else:
         data = request.json or {}
         func_type = data.get("function")
@@ -125,6 +130,76 @@ def parse_generate_request():
         user_input = (data.get("user_input") or "").strip()
 
     return func_type, template_idx, personality, user_input, uploaded_file
+
+
+def normalize_image_mime(mime_type, extension):
+    """Normalize common image MIME types for Gemini."""
+    if extension in {".jpg", ".jpeg"}:
+        return "image/jpeg"
+    if extension == ".png":
+        return "image/png"
+    if extension == ".webp":
+        return "image/webp"
+    if extension == ".gif":
+        return "image/gif"
+    if mime_type in {"image/jpg", "image/pjpeg"}:
+        return "image/jpeg"
+    return mime_type
+
+
+def prepare_image_part(file_bytes, mime_type, filename):
+    """Normalize and optionally compress images before sending to Gemini."""
+    extension = os.path.splitext(filename)[1].lower()
+    mime_type = normalize_image_mime(mime_type, extension)
+
+    try:
+        from PIL import Image, ImageOps
+        import io
+
+        image = Image.open(io.BytesIO(file_bytes))
+        image = ImageOps.exif_transpose(image)
+
+        if image.mode in ("RGBA", "P", "LA"):
+            background = Image.new("RGB", image.size, (255, 255, 255))
+            if image.mode == "P":
+                image = image.convert("RGBA")
+            background.paste(image, mask=image.split()[-1] if "A" in image.mode else None)
+            image = background
+        elif image.mode != "RGB":
+            image = image.convert("RGB")
+
+        image.thumbnail((1536, 1536), Image.Resampling.LANCZOS)
+
+        buffer = io.BytesIO()
+        image.save(buffer, format="JPEG", quality=85, optimize=True)
+        return {"mime_type": "image/jpeg", "data": buffer.getvalue()}
+    except Exception as exc:
+        print(f"Pillow processing failed, using original bytes: {exc}")
+        if mime_type not in ALLOWED_IMAGE_TYPES:
+            mime_type = mimetypes.guess_type(filename)[0] or "image/jpeg"
+        return {"mime_type": mime_type, "data": file_bytes}
+
+
+def extract_response_text(response):
+    """Safely read Gemini response text."""
+    try:
+        text = response.text
+        if text:
+            return text
+    except ValueError:
+        pass
+
+    candidates = getattr(response, "candidates", None) or []
+    if candidates:
+        parts = getattr(candidates[0].content, "parts", [])
+        texts = [part.text for part in parts if getattr(part, "text", None)]
+        if texts:
+            return "\n".join(texts)
+
+    return (
+        "Unable to analyze this image. The model could not generate a response. "
+        "Try a clearer photo or add a short text description."
+    )
 
 
 def process_uploaded_file(uploaded_file, user_input):
@@ -144,7 +219,8 @@ def process_uploaded_file(uploaded_file, user_input):
         if not mime_type or mime_type not in ALLOWED_IMAGE_TYPES:
             mime_type = mimetypes.guess_type(filename)[0] or "image/jpeg"
 
-        return user_input, {"mime_type": mime_type, "data": file_bytes}, filename
+        image_part = prepare_image_part(file_bytes, mime_type, filename)
+        return user_input, image_part, filename
 
     if extension in ALLOWED_TEXT_EXTENSIONS:
         if len(file_bytes) > MAX_TEXT_SIZE:
@@ -178,7 +254,7 @@ def generate_ai_response(system_instruction, prompt, image_part=None):
                 system_instruction=system_instruction,
             )
             response = model.generate_content(content_parts)
-            return response.text
+            return extract_response_text(response)
         except Exception as exc:
             last_error = exc
             print(f"Model {model_name} failed: {exc}")
@@ -188,6 +264,20 @@ def generate_ai_response(system_instruction, prompt, image_part=None):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.errorhandler(413)
+def request_too_large(_error):
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Upload too large. Maximum total upload size is 6MB."}), 413
+    return render_template("index.html"), 413
+
+
+@app.errorhandler(500)
+def internal_server_error(_error):
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Internal server error. Please try again with a smaller image."}), 500
+    return render_template("index.html"), 500
 
 @app.route("/api/generate", methods=["POST"])
 def generate():

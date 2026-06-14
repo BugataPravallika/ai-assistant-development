@@ -336,6 +336,14 @@ function initFileUpload() {
 }
 
 function setSelectedFile(file) {
+    try {
+        validateSelectedFile(file);
+    } catch (error) {
+        alert(error.message);
+        clearSelectedFile();
+        return;
+    }
+
     selectedFile = file;
     fileUploadPlaceholder.classList.add("hidden");
     filePreview.classList.remove("hidden");
@@ -368,6 +376,51 @@ function clearSelectedFile() {
 // ==========================================================================
 // BACKEND API CALLS
 // ==========================================================================
+
+async function parseApiResponse(response) {
+    const contentType = response.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+        return response.json();
+    }
+
+    const rawText = await response.text();
+    const snippet = rawText.replace(/\s+/g, " ").slice(0, 120);
+    throw new Error(
+        `Server returned an unexpected response (${response.status}). ` +
+        (response.status === 413
+            ? "Try a smaller image under 5MB."
+            : response.status >= 500
+                ? "The server timed out or failed. Try again with a smaller image."
+                : "Please refresh and try again.") +
+        (snippet ? ` Details: ${snippet}` : "")
+    );
+}
+
+function validateSelectedFile(file) {
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/gif",
+        "text/plain",
+        "text/markdown",
+        "text/csv",
+        "application/json"
+    ];
+    const allowedExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".txt", ".md", ".csv", ".json"];
+    const extension = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")).toLowerCase() : "";
+    const isImage = file.type.startsWith("image/") || [".jpg", ".jpeg", ".png", ".webp", ".gif"].includes(extension);
+    const maxSize = isImage ? 5 * 1024 * 1024 : 512 * 1024;
+
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(extension)) {
+        throw new Error("Unsupported file type. Use JPG, PNG, WEBP, GIF, TXT, MD, CSV, or JSON.");
+    }
+
+    if (file.size > maxSize) {
+        throw new Error(isImage ? "Image too large. Maximum size is 5MB." : "Text file too large. Maximum size is 512KB.");
+    }
+}
 
 async function handleGenerate() {
     const inputVal = userInput.value.trim();
@@ -404,7 +457,7 @@ async function handleGenerate() {
             body: formData
         });
 
-        const data = await response.json();
+        const data = await parseApiResponse(response);
 
         if (!response.ok) {
             throw new Error(data.error || "An error occurred during response generation.");
@@ -443,7 +496,7 @@ async function submitFeedback(helpful) {
             })
         });
 
-        const data = await response.json();
+        const data = await parseApiResponse(response);
         if (!response.ok) {
             throw new Error(data.error || "Failed to submit feedback.");
         }
@@ -463,7 +516,7 @@ async function submitFeedback(helpful) {
 async function fetchStats() {
     try {
         const response = await fetch("/api/stats");
-        const data = await response.json();
+        const data = await parseApiResponse(response);
         if (response.ok) {
             updateStatsUI(data);
         }
