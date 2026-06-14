@@ -3,111 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Assistant Development - Prompt Engineering Project</title>
-    <!-- Google Fonts Poppins -->
+    <meta name="description" content="AI Assistant — Your premium AI-powered companion for learning, creativity, and productivity. Powered by Gemini.">
+    <title>AI Assistant — Intelligent AI for Everyone</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Marked Markdown Parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Custom Style -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Background Blobs -->
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <div class="blob blob-3"></div>
+    <div class="ambient-bg" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="grid-overlay"></div>
+    </div>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <a href="#" class="nav-logo">
-                <i class="fa-solid fa-brain-circuit text-gradient"></i> AI Assistant Dev
+            <a href="#home" class="nav-logo scroll-link">
+                <span class="logo-icon"><i class="fa-solid fa-sparkles"></i></span>
+                <span class="logo-text">AI Assistant</span>
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#assistant">Try Assistant</a></li>
-                <li><a href="#stats">Stats</a></li>
-                <li><a href="#about">About</a></li>
+                <li><a href="#features" class="scroll-link">Features</a></li>
+                <li><a href="#how-it-works" class="scroll-link">How It Works</a></li>
+                <li><a href="#assistant" class="scroll-link">Try It</a></li>
+                <li><a href="#testimonials" class="scroll-link">Reviews</a></li>
+                <li><a href="#faq" class="scroll-link">FAQ</a></li>
             </ul>
-            <!-- Hamburger Menu -->
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div class="nav-actions">
+                <a href="#assistant" class="nav-cta scroll-link">Get Started</a>
+                <button class="hamburger" id="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Container -->
     <main class="content-wrapper">
-        <!-- Hero Section -->
+        <!-- Hero -->
         <section id="home" class="hero-section">
-            <h1 class="hero-title animate-fade-in">AI Assistant</h1>
-            <p class="hero-subtitle animate-slide-up">Your AI-powered companion for learning, creativity, and productivity.</p>
-            <a href="#assistant" class="cta-btn scroll-link">Get Started <i class="fa-solid fa-arrow-right"></i></a>
-        </section>
-
-        <!-- Features Grid -->
-        <section id="features" class="features-section">
-            <h2 class="section-title">Core Capabilities</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper">
-                        <i class="fa-solid fa-circle-question feature-icon"></i>
-                    </div>
-                    <h3>Question Answering</h3>
-                    <p>Factual, academic, or beginner-friendly explanations powered by engineered templates.</p>
+            <div class="hero-inner reveal">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Powered by Google Gemini</span>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper">
-                        <i class="fa-solid fa-align-left feature-icon"></i>
-                    </div>
-                    <h3>Text Summarization</h3>
-                    <p>Condense lengthy research papers, articles, or notes into concise, digestible points.</p>
+                <h1 class="hero-title">
+                    Intelligence that <span class="text-gradient">works for you</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Answer questions, summarize research, create content, and get study guidance — all through expertly engineered prompts in one beautiful interface.
+                </p>
+                <div class="hero-cta-group">
+                    <a href="#assistant" class="btn btn-primary scroll-link">
+                        Start for Free <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="#features" class="btn btn-ghost scroll-link">
+                        <i class="fa-solid fa-play"></i> Explore Features
+                    </a>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper">
-                        <i class="fa-solid fa-pen-nib feature-icon"></i>
-                    </div>
-                    <h3>Creative Content</h3>
-                    <p>Generate high-quality stories, poems, essays, and imaginative text based on structural prompts.</p>
+                <div class="hero-trust">
+                    <div class="trust-item"><i class="fa-solid fa-shield-halved"></i> Secure &amp; Private</div>
+                    <div class="trust-item"><i class="fa-solid fa-wand-magic-sparkles"></i> Prompt Engineered</div>
+                    <div class="trust-item"><i class="fa-solid fa-mobile-screen"></i> Works Everywhere</div>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon-wrapper">
-                        <i class="fa-solid fa-graduation-cap feature-icon"></i>
+            </div>
+            <div class="hero-preview reveal reveal-delay-1">
+                <div class="preview-window glass-card">
+                    <div class="preview-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                        <span class="preview-title">AI Assistant Console</span>
                     </div>
-                    <h3>Study Advice</h3>
-                    <p>Receive curriculum roadmaps, preparation tips, and strategic placement guidelines.</p>
+                    <div class="preview-body">
+                        <div class="preview-msg user">
+                            <span class="preview-label">You</span>
+                            <p>Explain quantum computing in simple terms</p>
+                        </div>
+                        <div class="preview-msg ai">
+                            <span class="preview-label"><i class="fa-solid fa-sparkles"></i> AI</span>
+                            <p>Quantum computing uses qubits that can exist in multiple states at once, enabling parallel computation beyond classical limits...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Interactive AI Assistant Interface -->
-        <section id="assistant" class="assistant-section">
-            <h2 class="section-title">AI Assistant Console</h2>
-            
-            <div class="chat-container">
-                <!-- Left Column - Configuration & Input -->
-                <div class="chat-config-pane">
+        <!-- Features -->
+        <section id="features" class="section features-section">
+            <div class="section-header reveal">
+                <span class="section-eyebrow">Capabilities</span>
+                <h2 class="section-title">Everything you need in one AI workspace</h2>
+                <p class="section-desc">Four powerful modes, multiple prompt templates, and two personas — designed for students, creators, and professionals.</p>
+            </div>
+            <div class="features-grid">
+                <article class="feature-card glass-card reveal">
+                    <div class="feature-icon-wrap gradient-indigo">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </div>
+                    <h3>Question Answering</h3>
+                    <p>Factual, academic, or beginner-friendly explanations powered by engineered templates.</p>
+                    <span class="feature-tag">Expert Mode</span>
+                </article>
+                <article class="feature-card glass-card reveal reveal-delay-1">
+                    <div class="feature-icon-wrap gradient-purple">
+                        <i class="fa-solid fa-align-left"></i>
+                    </div>
+                    <h3>Text Summarization</h3>
+                    <p>Condense lengthy research papers, articles, or notes into concise, digestible points.</p>
+                    <span class="feature-tag">Fast Read</span>
+                </article>
+                <article class="feature-card glass-card reveal reveal-delay-2">
+                    <div class="feature-icon-wrap gradient-blue">
+                        <i class="fa-solid fa-pen-nib"></i>
+                    </div>
+                    <h3>Creative Content</h3>
+                    <p>Generate high-quality stories, poems, essays, and imaginative text from structural prompts.</p>
+                    <span class="feature-tag">Create</span>
+                </article>
+                <article class="feature-card glass-card reveal reveal-delay-3">
+                    <div class="feature-icon-wrap gradient-teal">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <h3>Study Advice</h3>
+                    <p>Receive curriculum roadmaps, preparation tips, and strategic placement guidelines.</p>
+                    <span class="feature-tag">Learn</span>
+                </article>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="section how-section">
+            <div class="section-header reveal">
+                <span class="section-eyebrow">Simple Workflow</span>
+                <h2 class="section-title">From prompt to answer in seconds</h2>
+                <p class="section-desc">Three steps to smarter output — no complexity, no clutter.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card glass-card reveal">
+                    <div class="step-number">01</div>
+                    <div class="step-icon"><i class="fa-solid fa-sliders"></i></div>
+                    <h3>Configure</h3>
+                    <p>Choose your function, persona, and one of three expertly crafted prompt templates.</p>
+                </div>
+                <div class="step-connector reveal reveal-delay-1" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="step-card glass-card reveal reveal-delay-1">
+                    <div class="step-number">02</div>
+                    <div class="step-icon"><i class="fa-solid fa-keyboard"></i></div>
+                    <h3>Input</h3>
+                    <p>Enter text or upload a photo or document. Templates adapt to your content automatically.</p>
+                </div>
+                <div class="step-connector reveal reveal-delay-2" aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="step-card glass-card reveal reveal-delay-2">
+                    <div class="step-number">03</div>
+                    <div class="step-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3>Generate</h3>
+                    <p>Get polished markdown responses. Copy, download, and rate helpfulness instantly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Assistant Console -->
+        <section id="assistant" class="section assistant-section">
+            <div class="section-header reveal">
+                <span class="section-eyebrow">Live Demo</span>
+                <h2 class="section-title">Try the AI Assistant now</h2>
+                <p class="section-desc">Experience prompt engineering in action — select a mode, add text or upload a photo/file, and generate.</p>
+            </div>
+
+            <div class="chat-container reveal">
+                <div class="chat-config-pane glass-card">
                     <h3 class="pane-title"><i class="fa-solid fa-sliders"></i> Configuration</h3>
-                    
-                    <!-- Function dropdown -->
+
                     <div class="form-group">
                         <label for="functionSelect">Select Function</label>
                         <select id="functionSelect" class="styled-select">
                             <option value="question_answering">Question Answering</option>
                             <option value="text_summarization">Text Summarization</option>
                             <option value="content_generation">Creative Content Generation</option>
-                            <option value="study_advice">Study Advice & Recommendations</option>
+                            <option value="study_advice">Study Advice &amp; Recommendations</option>
                         </select>
                     </div>
 
-                    <!-- Personality dropdown -->
                     <div class="form-group">
                         <label for="personalitySelect">Select Personality</label>
                         <select id="personalitySelect" class="styled-select">
@@ -116,68 +198,77 @@
                         </select>
                     </div>
 
-                    <!-- Prompt Engineering Templates (Visually interactive) -->
                     <div class="form-group">
                         <label>Select Prompt Template</label>
-                        <div id="templateContainer" class="template-selector-grid">
-                            <!-- Populated dynamically by script.js -->
-                        </div>
+                        <div id="templateContainer" class="template-selector-grid"></div>
                     </div>
 
-                    <!-- User input text -->
                     <div class="form-group">
                         <label for="userInput">User Input</label>
                         <textarea id="userInput" placeholder="Enter your topic, text, or query here..." class="styled-textarea" rows="5"></textarea>
                     </div>
 
-                    <!-- Action Buttons -->
+                    <div class="form-group">
+                        <label for="fileInput">Attach File or Photo <span class="label-optional">(optional)</span></label>
+                        <div class="file-upload-zone" id="fileUploadZone">
+                            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,.txt,.md,.csv,.json" hidden>
+                            <div class="file-upload-placeholder" id="fileUploadPlaceholder">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Drop a photo or file here, or <span class="file-browse-link">browse</span></p>
+                                <span class="file-upload-hint">JPG, PNG, WEBP, GIF, TXT, MD, CSV, JSON — max 5MB</span>
+                            </div>
+                            <div class="file-preview hidden" id="filePreview">
+                                <img id="filePreviewImage" class="file-preview-img hidden" alt="Upload preview">
+                                <div id="filePreviewDoc" class="file-preview-doc hidden">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                    <span id="filePreviewName"></span>
+                                </div>
+                                <button type="button" id="removeFileBtn" class="file-remove-btn" title="Remove file" aria-label="Remove file">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="action-buttons-group">
-                        <button id="generateBtn" class="primary-btn">
+                        <button id="generateBtn" class="btn btn-primary btn-block">
                             <span class="btn-text">Generate Response</span>
                             <span class="btn-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
                         </button>
-                        <button id="clearBtn" class="secondary-btn" title="Clear inputs and output">
+                        <button id="clearBtn" class="btn btn-ghost" title="Clear inputs and output">
                             <i class="fa-solid fa-trash-can"></i> Clear
                         </button>
                     </div>
                 </div>
 
-                <!-- Right Column - Response Panel -->
-                <div class="chat-response-pane">
+                <div class="chat-response-pane glass-card">
                     <h3 class="pane-title"><i class="fa-solid fa-terminal"></i> Assistant Output</h3>
-                    
+
                     <div class="output-container">
-                        <!-- Default empty state -->
                         <div id="outputPlaceholder" class="output-placeholder">
                             <i class="fa-solid fa-comment-nodes placeholder-icon"></i>
                             <p>Configure parameters on the left and click <strong>Generate Response</strong> to see output.</p>
                         </div>
-                        
-                        <!-- AI Response Box -->
+
                         <div id="responseBox" class="response-box hidden">
-                            <!-- Typing indicator -->
                             <div id="typingIndicator" class="typing-indicator hidden">
                                 <div class="dot"></div>
                                 <div class="dot"></div>
                                 <div class="dot"></div>
                             </div>
-                            
-                            <!-- Markdown rendered content -->
                             <div id="responseContent" class="markdown-body"></div>
                         </div>
                     </div>
 
-                    <!-- Output Actions -->
                     <div id="outputActions" class="output-actions hidden">
                         <button id="copyBtn" class="action-btn" title="Copy to clipboard">
                             <i class="fa-solid fa-copy"></i> Copy Response
                         </button>
                         <button id="downloadBtn" class="action-btn" title="Download response as file">
-                            <i class="fa-solid fa-download"></i> Download Response
+                            <i class="fa-solid fa-download"></i> Download
                         </button>
                     </div>
 
-                    <!-- Feedback Loop -->
                     <div id="feedbackContainer" class="feedback-card hidden">
                         <p class="feedback-question">Was this response helpful?</p>
                         <div class="feedback-btn-group">
@@ -196,33 +287,37 @@
             </div>
         </section>
 
-        <!-- Statistics Dashboard -->
-        <section id="stats" class="stats-section">
-            <h2 class="section-title">Live Statistics Dashboard</h2>
+        <!-- Stats -->
+        <section id="stats" class="section stats-section">
+            <div class="section-header reveal">
+                <span class="section-eyebrow">Analytics</span>
+                <h2 class="section-title">Live usage dashboard</h2>
+                <p class="section-desc">Real-time metrics from every query and feedback submission.</p>
+            </div>
             <div class="stats-grid">
-                <div class="stats-card">
-                    <div class="stats-icon"><i class="fa-solid fa-calculator"></i></div>
+                <div class="stats-card glass-card reveal">
+                    <div class="stats-icon gradient-indigo"><i class="fa-solid fa-calculator"></i></div>
                     <div class="stats-info">
-                        <span id="statQueries" class="stats-value">0</span>
+                        <span id="statQueries" class="stats-value" data-count="0">0</span>
                         <span class="stats-label">Total Queries</span>
                     </div>
                 </div>
-                <div class="stats-card">
-                    <div class="stats-icon"><i class="fa-solid fa-message"></i></div>
+                <div class="stats-card glass-card reveal reveal-delay-1">
+                    <div class="stats-icon gradient-purple"><i class="fa-solid fa-message"></i></div>
                     <div class="stats-info">
-                        <span id="statFeedback" class="stats-value">0</span>
-                        <span class="stats-label">Total Feedback Received</span>
+                        <span id="statFeedback" class="stats-value" data-count="0">0</span>
+                        <span class="stats-label">Feedback Received</span>
                     </div>
                 </div>
-                <div class="stats-card">
-                    <div class="stats-icon"><i class="fa-solid fa-circle-info"></i></div>
+                <div class="stats-card glass-card reveal reveal-delay-2">
+                    <div class="stats-icon gradient-blue"><i class="fa-solid fa-circle-info"></i></div>
                     <div class="stats-info">
                         <span id="statFunction" class="stats-value-text">Question Answering</span>
                         <span class="stats-label">Active Function</span>
                     </div>
                 </div>
-                <div class="stats-card">
-                    <div class="stats-icon"><i class="fa-solid fa-user-gear"></i></div>
+                <div class="stats-card glass-card reveal reveal-delay-3">
+                    <div class="stats-icon gradient-teal"><i class="fa-solid fa-user-gear"></i></div>
                     <div class="stats-info">
                         <span id="statPersonality" class="stats-value-text">Friendly</span>
                         <span class="stats-label">Current Persona</span>
@@ -231,23 +326,181 @@
             </div>
         </section>
 
-        <!-- About Section -->
-        <section id="about" class="about-section">
-            <h2 class="section-title">About AI Assistant</h2>
-            <div class="about-card">
-                <p style="margin-bottom: 1rem;">AI Assistant helps users learn faster, generate ideas, summarize information, and receive intelligent guidance through a simple and interactive interface.</p>
-                <p>Designed with usability and accessibility in mind, it provides a seamless AI-powered experience for students, professionals, and lifelong learners.</p>
+        <!-- Testimonials -->
+        <section id="testimonials" class="section testimonials-section">
+            <div class="section-header reveal">
+                <span class="section-eyebrow">Testimonials</span>
+                <h2 class="section-title">Loved by learners worldwide</h2>
+                <p class="section-desc">See how students and professionals use AI Assistant every day.</p>
+            </div>
+            <div class="testimonials-grid">
+                <blockquote class="testimonial-card glass-card reveal">
+                    <div class="testimonial-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>"The prompt templates are a game-changer. I get structured answers for my research papers without rewriting prompts every time."</p>
+                    <footer class="testimonial-author">
+                        <div class="author-avatar gradient-indigo">SK</div>
+                        <div>
+                            <cite>Sneha K.</cite>
+                            <span>Graduate Student</span>
+                        </div>
+                    </footer>
+                </blockquote>
+                <blockquote class="testimonial-card glass-card reveal reveal-delay-1">
+                    <div class="testimonial-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>"Clean interface, fast responses, and the academic persona gives me exactly the tone I need for study notes. Better than generic chatbots."</p>
+                    <footer class="testimonial-author">
+                        <div class="author-avatar gradient-purple">MR</div>
+                        <div>
+                            <cite>Michael R.</cite>
+                            <span>Software Engineer</span>
+                        </div>
+                    </footer>
+                </blockquote>
+                <blockquote class="testimonial-card glass-card reveal reveal-delay-2">
+                    <div class="testimonial-stars">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p>"Summarization mode saved me hours on long articles. Copy and download features make it easy to integrate into my workflow."</p>
+                    <footer class="testimonial-author">
+                        <div class="author-avatar gradient-teal">AP</div>
+                        <div>
+                            <cite>Ananya P.</cite>
+                            <span>Content Creator</span>
+                        </div>
+                    </footer>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="section faq-section">
+            <div class="section-header reveal">
+                <span class="section-eyebrow">FAQ</span>
+                <h2 class="section-title">Frequently asked questions</h2>
+                <p class="section-desc">Everything you need to know before getting started.</p>
+            </div>
+            <div class="faq-list reveal">
+                <div class="faq-item glass-card">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What AI model powers this assistant?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>AI Assistant uses Google Gemini with intelligent fallback across model versions. When no API key is configured, a simulation mode provides sample responses for demo purposes.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What are prompt templates?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Each function includes three pre-engineered prompt structures. Templates control how your input is framed — from expert explanations to concise summaries — so you get consistent, high-quality output.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What's the difference between personas?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>The Friendly persona uses warm, approachable language ideal for beginners. The Academic persona delivers formal, structured responses suited for research, essays, and professional use.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Is my data stored or shared?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Queries are sent to the Gemini API for processing. Feedback ratings are logged locally for analytics. No personal account data is collected — the tool is designed for open, friction-free access.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I upload photos or files?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. You can attach photos (JPG, PNG, WEBP, GIF) for visual analysis, or text files (TXT, MD, CSV, JSON) whose content is included in your prompt. Combine uploads with written input for richer results.</p>
+                    </div>
+                </div>
+                <div class="faq-item glass-card">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I use this on mobile devices?</span>
+                        <i class="fa-solid fa-chevron-down faq-icon"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes. The entire experience is built mobile-first with responsive layouts for phones, tablets, and desktops. All features — generate, copy, download, upload, and feedback — work seamlessly on any screen size.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section class="section cta-section reveal">
+            <div class="cta-banner glass-card">
+                <div class="cta-content">
+                    <h2>Ready to work smarter?</h2>
+                    <p>Jump into the assistant console and experience AI that understands your intent.</p>
+                </div>
+                <a href="#assistant" class="btn btn-primary scroll-link">
+                    Launch Assistant <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="app-footer">
-        <div class="footer-content">
-            <p class="footer-copyright">&copy; 2026 Bugata Pravallika. All Rights Reserved.</p>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="#home" class="footer-logo scroll-link">
+                    <i class="fa-solid fa-sparkles"></i> AI Assistant
+                </a>
+                <p class="footer-tagline">Premium AI-powered learning, creativity, and productivity — built with prompt engineering excellence.</p>
+                <div class="footer-social">
+                    <a href="https://github.com/BugataPravallika/ai-assistant-development" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/pravallika-bugata-b40699325/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="mailto:pravallikabugata@gmail.com" aria-label="Email"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+            <div class="footer-links-group">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features" class="scroll-link">Features</a></li>
+                    <li><a href="#how-it-works" class="scroll-link">How It Works</a></li>
+                    <li><a href="#assistant" class="scroll-link">Try Assistant</a></li>
+                    <li><a href="#stats" class="scroll-link">Analytics</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#testimonials" class="scroll-link">Testimonials</a></li>
+                    <li><a href="#faq" class="scroll-link">FAQ</a></li>
+                    <li><a href="https://ai-assistant-development-zqek.onrender.com" target="_blank" rel="noopener noreferrer">Live Demo</a></li>
+                    <li><a href="https://github.com/BugataPravallika/ai-assistant-development" target="_blank" rel="noopener noreferrer">GitHub Repo</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:pravallikabugata@gmail.com">pravallikabugata@gmail.com</a></li>
+                    <li><a href="https://www.linkedin.com/in/pravallika-bugata-b40699325/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+                    <li><a href="https://github.com/BugataPravallika/ai-assistant-development" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Bugata Pravallika. All Rights Reserved.</p>
+            <p class="footer-meta"><a href="mailto:pravallikabugata@gmail.com">pravallikabugata@gmail.com</a> · Prompt Engineering Project</p>
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+</html>

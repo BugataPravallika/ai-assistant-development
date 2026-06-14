@@ -1,34 +1,119 @@
 // ==========================================================================
-// MOBILE MENU TOGGLE
+// MOBILE MENU, NAVBAR SCROLL, SCROLL REVEAL, FAQ
 // ==========================================================================
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    initMobileNav();
+    initNavbarScroll();
+    initScrollReveal();
+    initFaqAccordion();
+    initSmoothScroll();
+});
+
+function initMobileNav() {
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('navLinks');
-    
-    if (hamburger) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navLinks.classList.toggle('active');
+
+    if (!hamburger || !navLinks) return;
+
+    hamburger.addEventListener('click', function () {
+        const isActive = hamburger.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        hamburger.setAttribute('aria-expanded', isActive);
+    });
+
+    navLinks.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
         });
-        
-        // Close menu when link is clicked
-        const navItems = navLinks.querySelectorAll('a');
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!event.target.closest('.navbar')) {
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
+
+function initNavbarScroll() {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+
+    function updateNavbar() {
+        if (window.scrollY > 20) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    updateNavbar();
+    window.addEventListener('scroll', updateNavbar, { passive: true });
+}
+
+function initScrollReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    if (!reveals.length) return;
+
+    const observer = new IntersectionObserver(
+        function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
             });
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.navbar')) {
-                hamburger.classList.remove('active');
-                navLinks.classList.remove('active');
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+
+    reveals.forEach(function (el) {
+        observer.observe(el);
+    });
+}
+
+function initFaqAccordion() {
+    const faqItems = document.querySelectorAll('.faq-item');
+    if (!faqItems.length) return;
+
+    faqItems.forEach(function (item) {
+        const question = item.querySelector('.faq-question');
+        if (!question) return;
+
+        question.addEventListener('click', function () {
+            const isActive = item.classList.contains('active');
+
+            faqItems.forEach(function (other) {
+                other.classList.remove('active');
+                const btn = other.querySelector('.faq-question');
+                if (btn) btn.setAttribute('aria-expanded', 'false');
+            });
+
+            if (!isActive) {
+                item.classList.add('active');
+                question.setAttribute('aria-expanded', 'true');
             }
         });
-    }
-});
+    });
+}
+
+function initSmoothScroll() {
+    document.querySelectorAll('a.scroll-link[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+
+            e.preventDefault();
+            const target = document.querySelector(href);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+}
 
 // ==========================================================================
 // PROMPT ENGINEERING TEMPLATES REGISTRY (Client-Side)
@@ -93,39 +178,36 @@ const statFeedback = document.getElementById("statFeedback");
 const statFunction = document.getElementById("statFunction");
 const statPersonality = document.getElementById("statPersonality");
 
+const fileInput = document.getElementById("fileInput");
+const fileUploadZone = document.getElementById("fileUploadZone");
+const fileUploadPlaceholder = document.getElementById("fileUploadPlaceholder");
+const filePreview = document.getElementById("filePreview");
+const filePreviewImage = document.getElementById("filePreviewImage");
+const filePreviewDoc = document.getElementById("filePreviewDoc");
+const filePreviewName = document.getElementById("filePreviewName");
+const removeFileBtn = document.getElementById("removeFileBtn");
+
+let selectedFile = null;
+
 // ==========================================================================
 // INITIALIZATION
 // ==========================================================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Initial templates rendering
     renderTemplates();
-    
-    // Fetch initial stats
     fetchStats();
-    
-    // Setup listeners
+    updateDashboardInfo();
+
     functionSelect.addEventListener("change", handleFunctionChange);
     personalitySelect.addEventListener("change", handlePersonalityChange);
     generateBtn.addEventListener("click", handleGenerate);
     clearBtn.addEventListener("click", handleClear);
     copyBtn.addEventListener("click", copyToClipboard);
     downloadBtn.addEventListener("click", downloadResponse);
-    
+
     helpfulYes.addEventListener("click", () => submitFeedback(true));
     helpfulNo.addEventListener("click", () => submitFeedback(false));
 
-    // Smooth scroll for nav links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
+    initFileUpload();
 });
 
 // ==========================================================================
@@ -139,12 +221,11 @@ function handleFunctionChange(e) {
     updateDashboardInfo();
 }
 
-function handlePersonalityChange(e) {
+function handlePersonalityChange() {
     updateDashboardInfo();
 }
 
 function updateDashboardInfo() {
-    // Update labels in stats panel
     const selectedFuncText = functionSelect.options[functionSelect.selectedIndex].text;
     const selectedPersText = personalitySelect.options[personalitySelect.selectedIndex].text;
     statFunction.textContent = selectedFuncText;
@@ -154,32 +235,134 @@ function updateDashboardInfo() {
 function renderTemplates() {
     templateContainer.innerHTML = "";
     const templates = PROMPT_TEMPLATES[currentFunction];
-    
+
     templates.forEach((template, index) => {
         const card = document.createElement("div");
         card.className = `template-card ${index === selectedTemplateIndex ? 'active' : ''}`;
         card.dataset.index = index;
-        
+
         const badge = document.createElement("span");
         badge.className = "template-badge";
         badge.textContent = `Template ${index + 1}`;
-        
+
         const text = document.createElement("pre");
         text.className = "template-text";
-        // Format prompt placeholder nicely in UI
         text.textContent = template.replace("{user_input}", "[User Input]");
-        
+
         card.appendChild(badge);
         card.appendChild(text);
-        
+
         card.addEventListener("click", () => {
             document.querySelectorAll(".template-card").forEach(c => c.classList.remove("active"));
             card.classList.add("active");
             selectedTemplateIndex = index;
         });
-        
+
         templateContainer.appendChild(card);
     });
+}
+
+function animateStatValue(el, newValue) {
+    if (!el || el.classList.contains('stats-value-text')) {
+        if (el) el.textContent = newValue;
+        return;
+    }
+
+    const current = parseInt(el.textContent, 10) || 0;
+    const target = parseInt(newValue, 10) || 0;
+    if (current === target) return;
+
+    const duration = 600;
+    const start = performance.now();
+
+    function step(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(current + (target - current) * eased);
+        if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+}
+
+// ==========================================================================
+// FILE UPLOAD
+// ==========================================================================
+
+function initFileUpload() {
+    if (!fileInput || !fileUploadZone) return;
+
+    fileUploadZone.addEventListener("click", function (event) {
+        if (event.target.closest("#removeFileBtn")) return;
+        fileInput.click();
+    });
+
+    fileUploadZone.querySelector(".file-browse-link")?.addEventListener("click", function (event) {
+        event.stopPropagation();
+        fileInput.click();
+    });
+
+    fileInput.addEventListener("change", function () {
+        if (fileInput.files && fileInput.files[0]) {
+            setSelectedFile(fileInput.files[0]);
+        }
+    });
+
+    removeFileBtn?.addEventListener("click", function (event) {
+        event.stopPropagation();
+        clearSelectedFile();
+    });
+
+    ["dragenter", "dragover"].forEach(function (eventName) {
+        fileUploadZone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            fileUploadZone.classList.add("drag-over");
+        });
+    });
+
+    ["dragleave", "drop"].forEach(function (eventName) {
+        fileUploadZone.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            fileUploadZone.classList.remove("drag-over");
+        });
+    });
+
+    fileUploadZone.addEventListener("drop", function (event) {
+        const droppedFile = event.dataTransfer?.files?.[0];
+        if (droppedFile) {
+            setSelectedFile(droppedFile);
+        }
+    });
+}
+
+function setSelectedFile(file) {
+    selectedFile = file;
+    fileUploadPlaceholder.classList.add("hidden");
+    filePreview.classList.remove("hidden");
+
+    if (file.type.startsWith("image/")) {
+        filePreviewImage.src = URL.createObjectURL(file);
+        filePreviewImage.classList.remove("hidden");
+        filePreviewDoc.classList.add("hidden");
+    } else {
+        filePreviewImage.classList.add("hidden");
+        filePreviewDoc.classList.remove("hidden");
+        filePreviewName.textContent = file.name;
+    }
+}
+
+function clearSelectedFile() {
+    selectedFile = null;
+    fileInput.value = "";
+    if (filePreviewImage.src) {
+        URL.revokeObjectURL(filePreviewImage.src);
+        filePreviewImage.src = "";
+    }
+    filePreview.classList.add("hidden");
+    fileUploadPlaceholder.classList.remove("hidden");
+    filePreviewImage.classList.add("hidden");
+    filePreviewDoc.classList.add("hidden");
+    filePreviewName.textContent = "";
 }
 
 // ==========================================================================
@@ -188,16 +371,15 @@ function renderTemplates() {
 
 async function handleGenerate() {
     const inputVal = userInput.value.trim();
-    if (!inputVal) {
-        alert("Please enter some text in the user input area before generating.");
+    if (!inputVal && !selectedFile) {
+        alert("Please enter text or upload a file/photo before generating.");
         userInput.focus();
         return;
     }
 
-    // Set loading UI states
     generateBtn.disabled = true;
     generateBtn.innerHTML = `<span class="btn-text">Generating...</span> <span class="btn-icon"><i class="fa-solid fa-spinner fa-spin"></i></span>`;
-    
+
     outputPlaceholder.classList.add("hidden");
     responseBox.classList.remove("hidden");
     typingIndicator.classList.remove("hidden");
@@ -208,37 +390,34 @@ async function handleGenerate() {
     feedbackBtnGroup.classList.remove("hidden");
 
     try {
+        const formData = new FormData();
+        formData.append("function", currentFunction);
+        formData.append("template_index", selectedTemplateIndex);
+        formData.append("personality", personalitySelect.value);
+        formData.append("user_input", inputVal);
+        if (selectedFile) {
+            formData.append("file", selectedFile);
+        }
+
         const response = await fetch("/api/generate", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                function: currentFunction,
-                template_index: selectedTemplateIndex,
-                personality: personalitySelect.value,
-                user_input: inputVal
-            })
+            body: formData
         });
 
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.error || "An error occurred during response generation.");
         }
 
-        // Store active response states
         currentResponseText = data.response;
         currentPromptUsed = data.prompt_used;
 
-        // Render Markdown content
         responseContent.innerHTML = marked.parse(currentResponseText);
-        
-        // Show Actions & Feedback
+
         outputActions.classList.remove("hidden");
         feedbackContainer.classList.remove("hidden");
-        
-        // Sync stats from response
+
         if (data.stats) {
             updateStatsUI(data.stats);
         }
@@ -255,9 +434,7 @@ async function submitFeedback(helpful) {
     try {
         const response = await fetch("/api/feedback", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 helpful: helpful,
                 function: currentFunction,
@@ -271,11 +448,9 @@ async function submitFeedback(helpful) {
             throw new Error(data.error || "Failed to submit feedback.");
         }
 
-        // Show feedback success message
         feedbackBtnGroup.classList.add("hidden");
         feedbackSuccessMsg.classList.remove("hidden");
-        
-        // Sync stats
+
         if (data.stats) {
             updateStatsUI(data.stats);
         }
@@ -298,8 +473,8 @@ async function fetchStats() {
 }
 
 function updateStatsUI(statsObj) {
-    statQueries.textContent = statsObj.total_queries;
-    statFeedback.textContent = statsObj.total_feedback;
+    animateStatValue(statQueries, statsObj.total_queries);
+    animateStatValue(statFeedback, statsObj.total_feedback);
 }
 
 // ==========================================================================
@@ -308,10 +483,11 @@ function updateStatsUI(statsObj) {
 
 function handleClear() {
     userInput.value = "";
+    clearSelectedFile();
     responseContent.innerHTML = "";
     currentResponseText = "";
     currentPromptUsed = "";
-    
+
     responseBox.classList.add("hidden");
     outputPlaceholder.classList.remove("hidden");
     outputActions.classList.add("hidden");
@@ -322,7 +498,7 @@ function handleClear() {
 
 function copyToClipboard() {
     if (!currentResponseText) return;
-    
+
     navigator.clipboard.writeText(currentResponseText).then(() => {
         const origText = copyBtn.innerHTML;
         copyBtn.innerHTML = `<i class="fa-solid fa-check" style="color: var(--color-success)"></i> Copied!`;
@@ -338,15 +514,14 @@ function copyToClipboard() {
 
 function downloadResponse() {
     if (!currentResponseText) return;
-    
+
     const element = document.createElement("a");
-    const file = new Blob([currentResponseText], {type: 'text/plain'});
+    const file = new Blob([currentResponseText], { type: 'text/plain' });
     element.href = URL.createObjectURL(file);
-    
-    // Generate filename based on function name
+
     const timestamp = new Date().toISOString().slice(0, 10);
     element.download = `AI_Response_${currentFunction}_${timestamp}.txt`;
-    
+
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
